@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 {
 	
 
-	/*if (argc < 3) {
+	if (argc < 3) {
 		cout << "Usage: VectorialEdgeDetection.exe <options>" << endl;
 		cout << "Process all  bmp, png and jpg files in the current folder" << endl;
 		cout << "output \".\\yellow\\\<imageName\>.txt\"" << endl;
@@ -27,12 +27,12 @@ int main(int argc, char* argv[])
 
 		system("PAUSE");
 		return -1;
-	}*/
+	}
 
-	int threshold = -5;
+	int threshold = 0;
 	bool write = false;
 	
-	/*for (int i = 1; i < argc; ++i) {
+	for (int i = 1; i < argc; ++i) {
 		if (strcmp(argv[i], "-t") == 0 && i + 1 < argc) {
 			i++;
 			try {
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 			system("PAUSE");
 			return -1;
 		}
-	}*/
+	}
 
 	
 	cout << "Threshold = " << threshold << ", writeImages = " << (write ? "true" : "false") << endl << endl;
