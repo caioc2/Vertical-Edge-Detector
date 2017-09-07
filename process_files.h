@@ -72,6 +72,8 @@ void processImages(vector<wstring> & files, int threshold, bool writeImages) {
 		delete jobs[i];
 	}
 
+	cout << "\nWritting data to yellow.txt...\n";
 	writeTxtPoint(".\\yellow\\yellow.txt" , allPoints);
+	cout << "Done!\n";
 }
 
