@@ -41,14 +41,16 @@ string getFormatedDate() {
 }
 
 template<class T>
-void writeTxtPoint(string filename, vector<T> vec) {
+void writeTxtPoint(string filename, vector< vector<T> > vec) {
 	ofstream myFile(filename, ios::trunc);
 
 	if (myFile.good()) {
 		myFile << getFormatedDate() << endl << endl;
-		myFile << "X\tY" << endl;
+		myFile << "X\tY\tT" << endl;
 		for (int i = 0; i < vec.size(); ++i) {
-			myFile << vec[i].x << "\t" << vec[i].y << endl;
+			for (int j = 0; j < vec[i].size(); ++j) {
+				myFile << vec[i][j].x << "\t" << vec[i][j].y << "\t" << i << endl;
+			}
 		}
 		myFile.close();
 	}

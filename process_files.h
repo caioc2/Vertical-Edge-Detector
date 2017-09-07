@@ -20,10 +20,11 @@ class ProcessJob {
 	int init;
 	int step;
 	string dir;
+	vector< vector<Point2D> > & store;
 public:
 
-	ProcessJob(vector<wstring> & _files, string _dir, int _threshold, bool _writeImages, int _init, int _step) :
-		files(_files), dir(_dir), threshold(_threshold), writeImages(_writeImages), init(_init), step(_step) {};
+	ProcessJob(vector<wstring> & _files, vector< vector<Point2D> > & _store, string _dir, int _threshold, bool _writeImages, int _init, int _step) :
+		files(_files), store(_store), dir(_dir), threshold(_threshold), writeImages(_writeImages), init(_init), step(_step) {};
 
 	void run() {
 		for (int i = init; i < files.size(); i += step) {
@@ -35,11 +36,10 @@ public:
 			if (data != nullptr) {
 
 				Image img(data, w, h, n);
-				vector<Point2D> points = vertical_edge_detection(img, threshold);
+				store[i] = vertical_edge_detection(img, threshold);
 				fname = dir + string(fname.begin(), fname.end() - 3);
-				writeTxtPoint(fname + "txt", points);
 				if (writeImages) {
-					for (int j = 0; j < points.size(); ++j) img.paintYellow(points[j].x, points[j].y);
+					for (int j = 0; j < store[i].size(); ++j) img.paintYellow(store[i][j].x, store[i][j].y);
 					fname += "jpg";
 					stbi_write_jpg(fname.c_str(),  w, h, n, data, 100);
 				}
@@ -55,9 +55,12 @@ void processImages(vector<wstring> & files, int threshold, bool writeImages) {
 
     CreateDirectory(L".\\yellow", NULL);
 
+	vector< vector<Point2D> > allPoints(files.size());
+
 	vector<thread *> jobs(threads);
+
 	for (int i = 0; i < threads; ++i) {
-		ProcessJob *myJob = new ProcessJob(files, ".\\yellow\\", threshold, writeImages, i, threads);
+		ProcessJob *myJob = new ProcessJob(files, allPoints, ".\\yellow\\", threshold, writeImages, i, threads);
 		jobs[i] = new thread(&ProcessJob::run, myJob);
 	}
 
@@ -68,5 +71,7 @@ void processImages(vector<wstring> & files, int threshold, bool writeImages) {
 	for (int i = 0; i < threads; ++i) {
 		delete jobs[i];
 	}
+
+	writeTxtPoint(".\\yellow\\yellow.txt" , allPoints);
 }
 
