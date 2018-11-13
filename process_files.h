@@ -20,11 +20,10 @@ class ProcessJob {
 	int init;
 	int step;
 	string dir;
-	vector< vector<Point2D> > & store;
 public:
 
-	ProcessJob(vector<wstring> & _files, vector< vector<Point2D> > & _store, string _dir, int _threshold, bool _writeImages, int _init, int _step) :
-		files(_files), store(_store), dir(_dir), threshold(_threshold), writeImages(_writeImages), init(_init), step(_step) {};
+	ProcessJob(vector<wstring> & _files, string _dir, int _threshold, bool _writeImages, int _init, int _step) :
+		files(_files), dir(_dir), threshold(_threshold), writeImages(_writeImages), init(_init), step(_step) {};
 
 	void run() {
 		for (int i = init; i < files.size(); i += step) {
@@ -36,11 +35,13 @@ public:
 			if (data != nullptr) {
 
 				Image img(data, w, h, n);
-				store[i] = vertical_edge_detection(img, threshold);
-				fname = dir + string(fname.begin(), fname.end() - 3);
+
+				fname = string(fname.begin(), fname.end() - 4);
+				vector<Point2D> store = vertical_edge_detection(img, threshold);
+				writeTxtPoint(dir, fname, ".temp", store);
 				if (writeImages) {
-					for (int j = 0; j < store[i].size(); ++j) img.paintYellow(store[i][j].x, store[i][j].y);
-					fname += "jpg";
+					for (int j = 0; j < store.size(); ++j) img.paintYellow(store[j].x, store[j].y);
+					fname = dir + fname + ".jpg";
 					stbi_write_jpg(fname.c_str(),  w, h, n, data, 100);
 				}
 			}
@@ -55,12 +56,10 @@ void processImages(vector<wstring> & files, int threshold, bool writeImages) {
 
     CreateDirectory(L".\\yellow", NULL);
 
-	vector< vector<Point2D> > allPoints(files.size());
-
 	vector<thread *> jobs(threads);
 
 	for (int i = 0; i < threads; ++i) {
-		ProcessJob *myJob = new ProcessJob(files, allPoints, ".\\yellow\\", threshold, writeImages, i, threads);
+		ProcessJob *myJob = new ProcessJob(files, ".\\yellow\\", threshold, writeImages, i, threads);
 		jobs[i] = new thread(&ProcessJob::run, myJob);
 	}
 
@@ -71,9 +70,28 @@ void processImages(vector<wstring> & files, int threshold, bool writeImages) {
 	for (int i = 0; i < threads; ++i) {
 		delete jobs[i];
 	}
-
-	cout << "\nWritting data to yellow.txt...\n";
-	writeTxtPoint(".\\yellow\\yellow.txt" , allPoints);
-	cout << "Done!\n";
 }
 
+
+void joinFiles(vector<wstring> & files, string fileDir, string filename) {
+	ofstream myFile(fileDir + filename, ios::trunc|ios_base::binary);
+
+	if (myFile.good()) {
+		for (int i = 0; i < files.size(); ++i) {
+			string fo = fileDir + string(files[i].begin(), files[i].end());
+			ifstream toWrite(fo, std::ios_base::binary);
+			if (toWrite.good()) {
+				myFile << toWrite.rdbuf() << endl;
+				toWrite.close();
+				DeleteFileA(fo.c_str());
+			}
+			else {
+				wcout << L"Could not open file: " << files[i] << endl;
+			}
+		}
+		myFile.close();
+	}
+	else {
+		cout << "Could not create file: " << filename << " and merge point files" << endl;
+	}
+}

@@ -6,18 +6,20 @@
 
 using namespace std;
 
-vector<wstring> getCurrentDirImagesFileList() {
+vector<wstring> getFileList(wstring cd = wstring(), wregex r = wregex(L".*\.(jpg|JPG|png|PNG|bmp|BMP)$")) {
 	WIN32_FIND_DATA search_data;
 	memset(&search_data, 0, sizeof(WIN32_FIND_DATA));
 
-	TCHAR currentDir[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH, currentDir);
-	wstring cd(currentDir);
+	if (cd.empty()) {
+		TCHAR currentDir[MAX_PATH];
+		GetCurrentDirectory(MAX_PATH, currentDir);
+		cd = wstring(currentDir);
+	}
+	
 	HANDLE handle = FindFirstFile((cd + L"\\*").c_str(), &search_data);
 
 	vector<wstring> fileList;
 
-	wregex r(L".*\.(jpg|JPG|png|PNG|bmp|BMP)$");
 
 	while (handle != INVALID_HANDLE_VALUE)
 	{
@@ -33,6 +35,8 @@ vector<wstring> getCurrentDirImagesFileList() {
 	return fileList;
 }
 
+
+
 string getFormatedDate() {
 	std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	char buffer[200];
@@ -41,16 +45,14 @@ string getFormatedDate() {
 }
 
 template<class T>
-void writeTxtPoint(string filename, vector< vector<T> > vec) {
-	ofstream myFile(filename, ios::trunc);
-
+void writeTxtPoint(string dir, string filename, string ext, vector<T> vec) {
+	ofstream myFile(dir+filename+ext, ios::trunc);
+	
 	if (myFile.good()) {
-		myFile << getFormatedDate() << endl << endl;
-		myFile << "X\tY\tT" << endl;
+		myFile << filename << endl << endl;
+		myFile << "(X)\t(Y)" << endl;
 		for (int i = 0; i < vec.size(); ++i) {
-			for (int j = 0; j < vec[i].size(); ++j) {
-				myFile << vec[i][j].x << "\t" << vec[i][j].y << "\t" << i << endl;
-			}
+			myFile << vec[i].x << "\t" << vec[i].y << endl;
 		}
 		myFile.close();
 	}

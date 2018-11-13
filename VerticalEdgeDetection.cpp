@@ -10,6 +10,7 @@
 #include "image_process.h"
 #include "process_files.h"
 #include "util.h"
+#include <algorithm>
 
 
 
@@ -63,7 +64,7 @@ int main(int argc, char* argv[])
 	Timer t;
 	t.tick();
 
-	vector<wstring> files = getCurrentDirImagesFileList();
+	vector<wstring> files = getFileList();
 	cout << "Found " << files.size() << " images, in " << t.tock() << endl;
 
 	cout << "Processing images..." << endl << endl;
@@ -71,7 +72,20 @@ int main(int argc, char* argv[])
 
 	t.tick();
 	processImages(files, threshold, write);
-	cout << "Done, total time: " << t.tock() << endl << endl;
+	cout << "Done processing in " << t.tock() << endl << endl;
+	
+
+	t.tick();
+	cout << "Sorting files..." << endl << endl;
+	files = getFileList(L".\\yellow", wregex(L".*\.(temp|TEMP)$"));
+	std::sort(files.begin(), files.end());
+	cout << "Done sorting in " << t.tock() << endl << endl;
+
+
+	t.tick();
+	cout << "Joining files..." << endl << endl;
+	joinFiles(files, ".\\yellow\\", "yellow.txt");
+	cout << "Done joining files in " << t.tock() << endl << endl;
 
 	system("PAUSE");
     return 0;
