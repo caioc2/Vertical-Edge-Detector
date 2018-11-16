@@ -81,7 +81,7 @@ void joinFiles(vector<wstring> & files, string fileDir, string filename) {
 			string fo = fileDir + string(files[i].begin(), files[i].end());
 			ifstream toWrite(fo, std::ios_base::binary);
 			if (toWrite.good()) {
-				myFile << toWrite.rdbuf() << endl;
+				myFile << toWrite.rdbuf() << "\r\n";
 				toWrite.close();
 				DeleteFileA(fo.c_str());
 			}
