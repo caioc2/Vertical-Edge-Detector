@@ -1,5 +1,19 @@
-// VerticalEdgeDetection.cpp : Defines the entry point for the console application.
-//
+/**
+	This file is part of Vertical Edge Detector.
+
+	Copyright (C) 2018 - Caio SOUZA
+
+	Vertical Edge Detector is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Vertical Edge Detector is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+**/
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
