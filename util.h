@@ -19,6 +19,7 @@
 #include <vector>
 #include <regex>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -66,9 +67,9 @@ void writeTxtPoint(string dir, string filename, string ext, vector<T> vec) {
 	
 	if (myFile.good()) {
 		myFile << filename << endl << endl;
-		myFile << "(X)\t(Y)" << endl;
+		myFile << setw(8)<< "(X)"<< " " << setw(8) << "(Y)" << endl;
 		for (int i = 0; i < vec.size(); ++i) {
-			myFile << vec[i].x << "\t" << vec[i].y << endl;
+			myFile << setw(8) << vec[i].x << " " << setw(8) << vec[i].y << endl;
 		}
 		myFile.close();
 	}
