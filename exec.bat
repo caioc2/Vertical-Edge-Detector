@@ -1,1 +1,1 @@
-start VerticalEdgeDetection.exe -t -5
+start VerticalEdgeDetection.exe -t -5 -w

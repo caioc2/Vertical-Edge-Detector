@@ -56,7 +56,7 @@ public:
 				vector<Point2D> store = vertical_edge_detection(img, threshold);
 				writeTxtPoint(dir, fname, ".temp", store);
 				if (writeImages) {
-					for (int j = 0; j < store.size(); ++j) img.paintYellow(store[j].x, store[j].y);
+					for (int j = 0; j < store.size(); ++j) img.paintYellow(store[j].y, store[j].x);
 					fname = dir + fname + ".jpg";
 					stbi_write_jpg(fname.c_str(),  w, h, n, data, 100);
 				}

@@ -81,7 +81,7 @@ vector<Point2D> vertical_edge_detection_gray(Image & im, int threshold) {
 				if (min > val) {
 					min = val;
 					push = true;
-					p = { i,j };
+					p = { j, i };
 				}
 			}
 			else {
@@ -113,7 +113,7 @@ vector<Point2D> vertical_edge_detection_rgb(Image & im, int threshold) {
 				if (min > val) {
 					min = val;
 					push = true;
-					p = { i,j };
+					p = { j, i};
 				}
 			}
 			else {
